@@ -11,7 +11,7 @@ struct node {
 void list_clear(struct node *list);
 void list_append(int value, struct node **head);
 void list_insert(int value, struct node **head);
-void list_reverse(struct node **head);
-void free_list(char **head);
+void free_list(struct node **head);
+void print_list(struct node **head) ;
 
 #endif // __LIST_H__

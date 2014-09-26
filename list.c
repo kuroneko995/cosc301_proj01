@@ -19,7 +19,7 @@ void list_append(int value, struct node **head) {
     *head = new_node;
 }
 
-void list_insert(int value, struct node **head) {
+void list_insert(int value, struct node **head) { // Insert new value into sorted ascending list
     struct node *new_node = malloc(sizeof(struct node));
     new_node -> value = value;
     int temp = 0;
@@ -43,22 +43,7 @@ void list_insert(int value, struct node **head) {
     *head = fake_head.next;
 }
 
-void list_reverse(struct node **head) {
-    // your code here
-    struct node *temp = *head;
-    struct node *previous = NULL;     
-    struct node *next = NULL;
-    
-    while (temp != NULL) {
-        next = temp -> next;    // save the next node
-        temp -> next = previous; // change node.next to previous node
-        previous = temp;        // change previous to current node
-        temp = next;            // go to next node
-    }
-    *head = previous; // update head
-}
-
-void free_list(char **head) {
+void free_list(struct node **head) {
     struct node *next = NULL;
     struct node *temp = *head;
     while (temp != NULL) {
@@ -69,3 +54,12 @@ void free_list(char **head) {
     free(head);
 }
 
+void print_list(struct node **head) {
+    printf("** List Contents Begin **\n");
+    struct node *temp = *head;
+    while (temp != NULL) {
+        printf("%d\n", temp -> value);
+        temp = temp -> next;
+    }
+    printf("** List Contents End **\n");
+}

@@ -11,6 +11,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <errno.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+
 
 #include "list.h"
 
@@ -29,21 +32,16 @@ char** tokenify(const char *s) {
     
     //optimize length of pointer array
     char **short_tok_list = malloc((count + 1) * sizeof(char *));
-    for (int i = 0; i <= count; i++) { // Copy up to the NULL value
+    for (int i = 0; i < count; i++) { // Copy up to the NULL value
         short_tok_list[i] = tok_list[i];
     }    
+    short_tok_list[count] = NULL;
     free(scopy);
     free(tok_list);
     return short_tok_list;
 }
 
-void print_list(struct node **head) {
-    struct node *temp = *head;
-    while (temp != NULL) {
-        printf("%d\n", temp -> value);
-        temp = temp -> next;
-    }
-}
+
 
 // Free memory in token array
 void free_tokens(char **tokens) {
@@ -99,28 +97,38 @@ void process_data(FILE *input_file) {
     char line_buffer[4096];
     struct node **head = malloc(sizeof(struct node *));
     *head = NULL;
+    struct rusage usg;
    
     while(fgets(line_buffer, 4096, input_file) != NULL) { // read until EOF
-        printf("Igot here!! \n");
         replace_hash(line_buffer);
-        printf("/s\n",line_buffer);
+        //printf("%s\n",line_buffer);
         char **token_list = tokenify(line_buffer);    
         char *token = token_list[0];
-        
+        int i = 0;
         while (token != NULL) {
             if (is_all_digit(token)) {
                 int value = atoi(token);
+                //printf("Found an integer!\n");
                 list_insert(value, head);
             }
-            if (is_comment(token)) {
-                break; // stop reading once # is found
-            }
+            i++;
+            token = token_list[i];
         }
-        
-        
         free_tokens(token_list);
     }         
-    fclose(input_file); // Finish reading
+    printf("** Done reading file **\n");
+    print_list(head);
+  
+    //Freeing memory
+    free_list(head);
+
+    getrusage(RUSAGE_SELF, &usg);
+    float usertime = 0;
+    usertime = usg.ru_utime.tv_sec + 0.000001 * usg.ru_utime.tv_usec;
+    float systime = 0;
+    systime = usg.ru_stime.tv_sec + 0.000001 * usg.ru_stime.tv_usec;
+    printf("User time: %f\n", usertime);
+    printf("System time: %f\n", systime);
 }
 
 
