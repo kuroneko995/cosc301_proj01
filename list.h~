@@ -8,6 +8,8 @@ struct node {
 };
 
 /* your function declarations associated with the list */
+void list_clear(struct node *list);
+void list_append(int value, struct node **head);
 void list_insert(int value, struct node **head);
 void free_list(struct node **head);
 void print_list(struct node **head) ;

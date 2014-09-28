@@ -4,6 +4,15 @@
 
 /* your list function definitions */
 
+// Free memory used by the list
+void list_clear(struct node *list) {
+    while (list != NULL) {
+        struct node *tmp = list;
+        list = list->next;
+        free(tmp);
+    }
+}
+
 
 void list_insert(int value, struct node **head) { // Insert new value into sorted ascending list
     struct node *new_node = malloc(sizeof(struct node));
